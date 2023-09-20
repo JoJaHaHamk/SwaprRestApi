@@ -1,0 +1,29 @@
+{
+  "name": "swaprrestapi",
+  "version": "1.0",
+  "description": "This is the RESTapi for the Swapr application",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc index.ts",
+    "dev": "nodemon index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoJaHaHamk/SwaprRestApi.git"
+  },
+  "keywords": [
+    "RESTapi",
+    "Swapr",
+    "App",
+    "react-native"
+  ],
+  "author": "JoJaHaHamk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoJaHaHamk/SwaprRestApi/issues"
+  },
+  "homepage": "https://github.com/JoJaHaHamk/SwaprRestApi#readme",
+  "dependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
