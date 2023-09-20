@@ -7,7 +7,7 @@ router.get("/", (req: Request, res: Response): void => {
   res.status(200).send(users);
 });
 router.get('/test', (req: Request, res: Response) => {
-  res.status(200).send('Hello World!');
+  res.status(200).send({'key': 'Hello World!'});
 })
 
 export { router };

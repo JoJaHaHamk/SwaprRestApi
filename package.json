@@ -26,10 +26,14 @@
   "homepage": "https://github.com/JoJaHaHamk/SwaprRestApi#readme",
   "dependencies": {
     "@types/express": "^4.17.13",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
     "@types/jest": "^29.5.5",
-    "dotenv": "^16.3.1",
+    "@types/supertest": "^2.0.12",
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
+    "supertest": "^6.3.3",
     "ts-jest": "^29.1.1"
   }
 }
