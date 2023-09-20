@@ -1,6 +1,6 @@
 {
   "name": "swaprrestapi",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "This is the RESTapi for the Swapr application",
   "main": "index.js",
   "scripts": {
