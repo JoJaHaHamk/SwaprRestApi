@@ -36,6 +36,7 @@ jobs:
       - name: authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
+          project_id: "swapr-399612"
           credentials_json: ${{ secrets.GCLOUD_SERVICE_KEY }}
 
     #   - name: deploy to google cloud app engine
