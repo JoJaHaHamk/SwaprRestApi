@@ -1,0 +1,43 @@
+name: Deploy to Google Cloud
+
+on:
+  push:
+    branches:
+      - main # Change this to your main branch name
+  workflow_run:
+    workflows: ["Jest Tests"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' # Only run on the main branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Authenticate with Google Cloud
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          project_id: swapr-399612 # Replace with your Google Cloud project ID
+          export_default_credentials: true
+
+      - name: Deploy to Google Cloud App Engine
+        run: gcloud app deploy app.yaml --version=1 # Replace with your app.yaml file path
+
+
+      # Optionally, you can run database migrations or other post-deployment tasks here.
