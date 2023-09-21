@@ -43,5 +43,3 @@ jobs:
         uses: google-github-actions/deploy-appengine@v1
         with:
           project_id: "swapr-399612"
-
-    # Optionally, you can run database migrations or other post-deployment tasks here.
