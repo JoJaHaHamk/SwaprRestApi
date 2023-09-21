@@ -3,7 +3,7 @@ name: Deploy to Google Cloud
 on:
   push:
     branches:
-      - main # Change this to your main branch name
+      - "automatic-deployment"
   workflow_run:
     workflows: ["Jest Tests"]
     types:
@@ -29,15 +29,13 @@ jobs:
       - name: Build TypeScript
         run: npm run build
 
-      - name: Authenticate with Google Cloud
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - name: authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
-          project_id: swapr-399612 # Replace with your Google Cloud project ID
-          export_default_credentials: true
-
-      - name: Deploy to Google Cloud App Engine
-        run: gcloud app deploy app.yaml --version=1 # Replace with your app.yaml file path
-
+          credentials_json: ${{ secrets.GCLOUD_SERVICE_KEY }}
+      - name: deploy to google cloud app engine
+        uses: google-github-actions/deploy-appengine@v1
+        with:
+          project_id: "swapr-399612"
 
       # Optionally, you can run database migrations or other post-deployment tasks here.
