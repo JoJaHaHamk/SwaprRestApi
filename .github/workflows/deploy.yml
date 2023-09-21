@@ -1,23 +1,15 @@
 name: Deploy to Google Cloud
 
-# on:
-#   push:
-#     branches:
-#       - "automatic-deployment"
-#   workflow_run:
-#     workflows: ["Jest Tests"]
-#     types:
-#       - completed
-
 on:
-  push:
-    branches:
-      - automatic-deployment
+  workflow_run:
+    workflows: ["Jest Tests"]
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
