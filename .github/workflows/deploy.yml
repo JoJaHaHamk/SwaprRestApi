@@ -3,7 +3,7 @@ name: Deploy to Google Cloud
 on:
   push:
     branches:
-      - main # Change this to your main branch name
+      - "automatic-deployment"
   workflow_run:
     workflows: ["Jest Tests"]
     types:
@@ -30,7 +30,7 @@ jobs:
         run: npm run build
 
       - name: Authenticate with Google Cloud
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud
         with:
           service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           project_id: swapr-399612 # Replace with your Google Cloud project ID
