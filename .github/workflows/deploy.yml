@@ -1,9 +1,6 @@
 name: Deploy to Google Cloud
 
 on:
-  push:
-    branches:
-      - "automatic-deployment"
   workflow_run:
     workflows: ["Jest Tests"]
     types:
@@ -11,9 +8,8 @@ on:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main' # Only run on the main branch
     runs-on: ubuntu-latest
-
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Install dependencies
         run: npm install
@@ -32,10 +28,10 @@ jobs:
       - name: authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
+          project_id: "swapr-399612"
           credentials_json: ${{ secrets.GCLOUD_SERVICE_KEY }}
+
       - name: deploy to google cloud app engine
         uses: google-github-actions/deploy-appengine@v1
         with:
           project_id: "swapr-399612"
-
-      # Optionally, you can run database migrations or other post-deployment tasks here.
