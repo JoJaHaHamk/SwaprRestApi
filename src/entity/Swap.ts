@@ -1,29 +1,32 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
-import { Book, states as statesEnum } from "./index";
+import { Book } from "./index";
+import states from "./states";
 
 @Entity()
 export class Swap {
-        @PrimaryGeneratedColumn()
-        swapId: number;
-    
-        @ManyToOne(() => Book, (book: Book) => book.swaps1)
-        book1Id: number;
+    @PrimaryGeneratedColumn()
+    swapId: number;
 
-        @Column({
-            type: "enum",
-            enum: statesEnum
-        })
-        state1: statesEnum;
+    @ManyToOne(() => Book, (book: Book) => book.swaps1)
+    book1Id: number;
 
-        @ManyToOne(() => Book, (book: Book) => book.swaps2)
-        book2Id: number;
+    @Column({
+        type: "enum",
+        enum: states,
+        enumName: "states"
+    })
+    state1: states;
 
-        @Column({
-            type: "enum",
-            enum: statesEnum
-        })
-        state2: statesEnum;
+    @ManyToOne(() => Book, (book: Book) => book.swaps2)
+    book2Id: number;
 
-        @Column()
-        distanceInMeters: number;
-    }
+    @Column({
+        type: "enum",
+        enum: states,
+        enumName: "states"
+    })
+    state2: states;
+
+    @Column()
+    distanceInMeters: number;
+}

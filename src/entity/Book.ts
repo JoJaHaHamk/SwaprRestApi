@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany} from "typeorm";
-import { User, Swap, type as typeEnum } from "./index";
+import { User, Swap } from "./index";
+import types from "./type";
 
 @Entity()
 export class Book {
@@ -16,10 +17,11 @@ export class Book {
     userId: User;
 
     @Column({
-        type: "enum",
-        enum: typeEnum
+        type: 'enum',
+        enum: types,
+        enumName: 'type',
     })
-    type: typeEnum;
+    type: types;
 
     @OneToMany(() => Swap, (swap: Swap) => swap.book1Id)
     swaps1: Swap[];

@@ -3,6 +3,5 @@ export {User} from './User';
 export {Book} from './Book';
 export {Swap} from './Swap';
 
-// Export all enumerations
-export {states} from './states';
-export {type} from './type';
+export {default as types} from './type';
+export {default as states} from './states';
