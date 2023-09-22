@@ -1,0 +1,341 @@
+openapi: 3.0.3
+info:
+  title: Swapr.
+  description: |-
+    Swapr is a platform for swapping books.
+    It allows users to create a list of books they own and a list of books they want.
+    Users can then swap books with other users.
+  version: 1.0.0
+tags:
+  - name: user
+  - name: book
+  - name: swap
+paths:
+  # User
+  /login:
+    post:
+      summary: Login
+      description: Login with email and password
+      tags: 
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                  userId:
+                    type: integer
+                    example: 1
+        '400':
+          description: Invalid status value
+  /register:
+    post:
+      summary: Register
+      description: Register a new user
+      tags: 
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid status value
+  /user/{userId}:
+    put:
+      summary: user
+      description: Update a user's
+      security:
+        - BearerAuth: []
+      tags: 
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+              
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid status value
+
+  # Book
+  /user/{userId}/book:
+    parameters:
+      - name: userId
+        in: path
+        description: ID of the user
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Fetch all books
+      description: Retreive all books of a user
+      security:
+        - BearerAuth: []
+      tags: 
+        - book
+      parameters:
+        - name: type
+          in: query
+          description: Filter by type
+          required: true
+          schema:
+            $ref: '#/components/schemas/BookType'
+        - name: search
+          in: query
+          description: Filter by search
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                    $ref: '#/components/schemas/Book'
+        '400':
+          description: Invalid status value
+    post:
+      summary: Add a new book
+      description: Add a new book to the user's collection
+      security:
+        - BearerAuth: []
+      tags: 
+        - book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreate'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          description: Invalid status value
+  /user/{userId}/book/{bookId}:
+    parameters:
+      - name: userId
+        in: path
+        description: ID of the user
+        required: true
+        schema:
+          type: string
+      - name: bookId
+        in: path
+        description: ID of the book
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Remove a book
+      description: Remove a book from the user's collection
+      security:
+        - BearerAuth: []
+      tags: 
+        - book
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid status value
+  # Swap
+  /user/{userId}/swap:
+    parameters:
+      - name: userId
+        in: path
+        description: ID of the user
+        required: true
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Filter by state
+        required: true
+        schema:
+          type: string
+          enum: [match, accepted]
+    get:
+      summary: Fetch all swaps
+      description: Retreive all swaps of a user
+      security:
+        - BearerAuth: []
+      tags: 
+        - swap
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/Swap'
+        '400':
+          description: Invalid status value
+  /user/{userId}/swap/{swapId}:
+    parameters:
+      - name: userId
+        in: path
+        description: ID of the user
+        required: true
+        schema:
+          type: string
+      - name: swapId
+        in: path
+        description: ID of the swap
+        required: true
+        schema:
+          type: string
+    patch:
+      summary: Update a swap state
+      description: Update a swap state of a user
+      security:
+        - BearerAuth: []
+      tags: 
+        - swap
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum: [accepted, cancelled, traded, returned]
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Swap'
+        '400':
+          description: Invalid status value
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - address
+        - city
+        - country
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: example@email.com
+        password:
+          type: string
+          example: password
+        address:
+          type: string
+          example: Vankanlähde 9
+        city:
+          type: string
+          example: Hämeenlinna
+        country:
+          type: string
+          example: Finaldn
+    LoginUser:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: example@email.com
+        password:
+          type: string
+          example: password
+    Book:
+      type: object
+      required:
+        - bookId
+        - isbn
+      properties:
+        bookId:
+          type: integer
+          example: 1
+        isbn:
+          type: string
+          example: 978-3-16-148410-0
+    BookType:
+      type: string
+      enum: [owned, wanted]
+    BookCreate:
+      type: object
+      required:
+        - isbn
+        - type
+      properties:
+        isbn:
+          type: string
+          example: 978-3-16-148410-0
+        type:
+          type: string
+          enum:
+            - owned
+            - wanted
+    Swap:
+      type: object
+      required:
+        - swapId
+        - wantedBookIsbn
+        - ownedBookIsbn
+      properties:
+        swapId:
+          type: integer
+          example: 1
+        wantedBookIsbn:
+          type: string
+          example: 978-3-16-148410-0
+        ownedBookIsbn:
+          type: string
+          example: 978-3-16-148410-0
+        distance:
+          type: string
+          example: 1.2 km
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
