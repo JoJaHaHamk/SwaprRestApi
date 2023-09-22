@@ -1,13 +1,11 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 
-import { router as userRoutes } from "./routes/user.routes";
+import { userRoutes } from "./routes/index";
 
 const app: Application = express();
 
-app.use("/users", userRoutes);
+app.use(express.json());
 
-app.use("/", (req: Request, res: Response, next: NextFunction): void => {
-  res.json({ message: "Allo! Catch-all route." });
-});
+app.use("/", userRoutes);
 
 export default app;
