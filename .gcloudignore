@@ -1,1 +1,5 @@
 node_modules
+jest.config.js
+LICENSE
+README.md
+.env
