@@ -14,4 +14,3 @@ AppDataSource.initialize().then(async () => {
     app.listen(PORT, (): void => console.log(`Server running on port ${PORT}`));
 
 }).catch(error => console.log(error))
-

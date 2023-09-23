@@ -39,7 +39,7 @@ paths:
                     type: integer
                     example: 1
         '400':
-          description: Invalid status value
+          description: Invalid parameters
   /register:
     post:
       summary: Register
@@ -56,7 +56,7 @@ paths:
         '200':
           description: Successful operation
         '400':
-          description: Invalid status value
+          description: Invalid parameters
   /user/{userId}:
     put:
       summary: user
@@ -80,7 +80,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          description: Invalid status value
+          description: Invalid parameters
 
   # Book
   /user/{userId}/book:
@@ -121,7 +121,7 @@ paths:
                 items:
                     $ref: '#/components/schemas/Book'
         '400':
-          description: Invalid status value
+          description: Invalid parameters
     post:
       summary: Add a new book
       description: Add a new book to the user's collection
@@ -143,7 +143,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Book'
         '400':
-          description: Invalid status value
+          description: Invalid parameters
   /user/{userId}/book/{bookId}:
     parameters:
       - name: userId
@@ -169,7 +169,7 @@ paths:
         '200':
           description: Successful operation
         '400':
-          description: Invalid status value
+          description: Invalid parameters
   # Swap
   /user/{userId}/swap:
     parameters:
@@ -204,7 +204,7 @@ paths:
                   oneOf:
                     - $ref: '#/components/schemas/Swap'
         '400':
-          description: Invalid status value
+          description: Invalid parameters
   /user/{userId}/swap/{swapId}:
     parameters:
       - name: userId
@@ -244,7 +244,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Swap'
         '400':
-          description: Invalid status value
+          description: Invalid parameters
 components:
   schemas:
     User:
