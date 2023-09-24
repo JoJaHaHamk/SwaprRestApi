@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { hash, compare } from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
-import { User } from "../entity";
+import authMiddleware, {generateToken} from "../authMiddleware";
 
 const userRepository = AppDataSource.getRepository("User");
 
@@ -51,7 +51,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
     compare(user.password, users[0].password, (err, result) => {
 
-      const token = jsonwebtoken.sign({userId: users[0].userId}, "ao8YIsmIyq1gm6Z");
+      const token = generateToken(users[0].userId);
 
       if (result) {
         res.status(200).json({
@@ -64,6 +64,36 @@ router.post("/login", async (req: Request, res: Response) => {
         return;
       }
     });
+  });
+});
+
+router.put("/user/:id", authMiddleware, async (req: Request, res: Response) => {
+  const body = req.body;
+
+  if (!body.username && !body.email && !body.adress && !body.city && !body.country) {
+    res.status(400).send("Missing fields");
+    return;
+  }
+
+  const user = userRepository.findOne({where: { userId: req.params.id }}).then( async (user: any) => {
+    if (!user) {
+      res.status(400).send("User not found");
+      return;
+    }
+
+    user = {
+      username: body.username || user.username,
+      email: body.email || user.email,
+      adress: body.adress || user.adress,
+      city: body.city || user.city,
+      country: body.country || user.country
+    }
+
+    await userRepository.update(req.params.id, user);
+    const updatedUser = await userRepository.findOne({where: { userId: req.params.id }});
+    console.log(updatedUser);
+    res.status(200).send(updatedUser);
+    return;
   });
 });
 
