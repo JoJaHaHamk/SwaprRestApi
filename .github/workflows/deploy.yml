@@ -1,10 +1,9 @@
 name: Deploy to Google Cloud
 
 on:
-  workflow_run:
-    workflows: ["Jest Tests"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
