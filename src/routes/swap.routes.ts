@@ -22,7 +22,7 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
     const swaps = swaps1.concat(swaps2);
     // If no swaps are found, send a 400 Bad Request response to let the user now what's wrong
     if (swaps.length == 0) {
-        res.status(400).send("No swaps found for this user");
+        res.status(400).send("No swaps found for this user and/or state");
         return;
     }
     // Send the swaps as a response
