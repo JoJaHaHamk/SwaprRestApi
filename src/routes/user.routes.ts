@@ -1,13 +1,23 @@
 import { Router, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { hash, compare } from "bcrypt";
-import jsonwebtoken from "jsonwebtoken";
 import authMiddleware, {generateToken} from "../authMiddleware";
 
 const userRepository = AppDataSource.getRepository("User");
 
 const router = Router();
 
+// POST /register
+/*
+{
+  "username": "username",
+  "password": "password",
+  "email": "email",
+  "adress": "adress",
+  "city": "city",
+  "country": "country"
+}
+*/
 router.post("/register", async (req: Request, res: Response) => {
   
   const body = req.body;
@@ -40,6 +50,14 @@ router.post("/register", async (req: Request, res: Response) => {
   });
 });
 
+
+// POST /login
+/*
+{
+  "email": "email",
+  "password": "password"
+}
+*/
 router.post("/login", async (req: Request, res: Response) => {
   const user = {'email': req.body.email, 'password': req.body.password};
   
@@ -67,6 +85,16 @@ router.post("/login", async (req: Request, res: Response) => {
   });
 });
 
+// PUT /user/:id
+/*
+{
+	"username": "username",
+	"email": "email",
+	"adress": "adress",
+	"city": "city",
+	"country": "country"
+}
+*/
 router.put("/user/:id", authMiddleware, async (req: Request, res: Response) => {
   const body = req.body;
 
