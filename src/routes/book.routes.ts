@@ -8,6 +8,15 @@ const router = Router({mergeParams: true});
 const bookRepository = AppDataSource.getRepository("Book");
 const userRepository = AppDataSource.getRepository("User");
 
+// GET /user/:userId/book
+router.get("/", authMiddleware, async (req: Request, res: Response) => {
+    // Get all the books from the database
+    const books = await bookRepository.find({where: {userId: req.params.userId}});
+
+    // Send the books as a response
+    res.status(200).send(books);
+});
+
 // POST /user/:userId/book
 /*
 {
