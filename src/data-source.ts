@@ -8,14 +8,24 @@ dotenv.config();
 let AppDataSource = new DataSource({
     type: "mysql",
     extra: { socketPath: "/cloudsql/swapr-399612:europe-west1:swapr"},
-    host: process.env.DB_HOST || "104.199.94.6",
-    port: Number(process.env.DB_PORT) || 3306,
-    username: process.env.DB_USERNAME || "api",
-    password: process.env.DB_PASSWORD || ">r^UF,{.9/;|?YiA",
-    database: process.env.DB_NAME || "Swapr",
-    synchronize: true,
-    logging: false,
+    host: "104.199.94.6",
+    port: 3306,
+    username: "api",
+    password: ">r^UF,{.9/;|?YiA",
+    database: "Swapr",
     entities: [User, Book, Swap],
 })
+
+if (process.env.DEV_ENABLED) {
+    AppDataSource = new DataSource({
+        type: "mysql",
+        host: process.env.DB_HOST || "localhost",
+        port: Number(process.env.DB_PORT) || 3306,
+        username: process.env.DB_USERNAME || "root",
+        password: process.env.DB_PASSWORD || "root",
+        database: process.env.DB_NAME || "Swapr",
+        entities: [User, Book, Swap],
+    })
+}
 
 export {AppDataSource};
