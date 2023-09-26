@@ -64,4 +64,23 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     res.status(200).send(result);
 });
 
+// DELETE /user/:userId/book/:bookId
+router.delete("/:bookId", authMiddleware, async (req: Request, res: Response) => {
+    // Get the book from the database
+    const book = await bookRepository.findOne({where: {userId: req.params.userId, bookId: req.params.bookId}});
+
+    // Check if the book exists
+    // If not, send a 400 Bad Request response to let the user now what's wrong
+    if (!book) {
+        res.status(400).send("Book not found or not owned by authorized user");
+        return;
+    }
+
+    // Delete the book from the database
+    const result = await bookRepository.delete(book);
+
+    // Send a 200 OK response
+    res.status(200).send("Book deleted");
+});
+
 export { router };
