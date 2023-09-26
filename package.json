@@ -7,9 +7,8 @@
       "build": "tsc",
       "dev": "nodemon ./src/index.ts",
       "test": "jest",
-      "start": "ts-node src/index.ts",
-      "deploy": "tsc && gcloud app deploy",
-      "typeorm": "typeorm-ts-node-commonjs"
+      "start": "node ./build/index.js",
+      "deploy": "tsc && gcloud app deploy"
    },
    "repository": {
       "type": "git",
