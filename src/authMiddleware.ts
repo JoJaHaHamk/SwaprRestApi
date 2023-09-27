@@ -20,6 +20,11 @@ export default async (req: Request, res: Response, next: any) => {
         return res.status(401).send("User not found");
     }
 
+    // Remove && process.env.DEV_ENABLED != "true" when development is done
+    if (user.id != req.params.userId && process.env.DEV_ENABLED != "true") {
+        return res.status(401).send("Invalid token");
+    }
+
     next();
 }
 
