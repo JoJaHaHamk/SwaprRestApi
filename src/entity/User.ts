@@ -5,7 +5,7 @@ import { Book } from "./index";
 export class User {
 
     @PrimaryGeneratedColumn()
-    userId: number;
+    id: number;
 
     @Column()
     username: string;
@@ -25,7 +25,7 @@ export class User {
     @Column()
     country: string;
 
-    @OneToMany(() => Book, (book: Book) => book.userId)
+    @OneToMany(() => Book, (book: Book) => book.user, {onDelete: "CASCADE"})
     books: Book[];
 
 }

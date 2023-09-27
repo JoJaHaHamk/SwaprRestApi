@@ -14,6 +14,7 @@ let AppDataSource = new DataSource({
     password: ">r^UF,{.9/;|?YiA",
     database: "Swapr",
     entities: [User, Book, Swap],
+    synchronize: true
 })
 
 if (process.env.DEV_ENABLED) {
@@ -25,6 +26,7 @@ if (process.env.DEV_ENABLED) {
         password: process.env.DB_PASSWORD || "root",
         database: process.env.DB_NAME || "Swapr",
         entities: [User, Book, Swap],
+        synchronize: true
     })
 }
 
