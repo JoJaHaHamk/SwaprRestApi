@@ -52,7 +52,7 @@ router.patch("/:swapId", authMiddleware, async (req: Request, res: Response) => 
         return;
     }
     // Get the swap from the database to later update
-    const swap = await swapRepository.createQueryBuilder("swap")
+    let swap = await swapRepository.createQueryBuilder("swap")
         .innerJoinAndSelect('swap.book1', 'book1')
         .innerJoinAndSelect('swap.book2', 'book2')
         .innerJoinAndSelect('book1.user', 'user1')
@@ -74,6 +74,10 @@ router.patch("/:swapId", authMiddleware, async (req: Request, res: Response) => 
         res.status(400).send("User not found");
         return;
     }
+
+    swap = await swapRepository.save(swap);
+
+    swap = await swapRepository.findOneBy({id: req.params.swapId});
 
     // Send the updated swap as a response
     res.status(200).send(swap);
