@@ -14,7 +14,7 @@ export default async (req: Request, res: Response, next: any) => {
 
     const data: JwtPayload = jsonwebtoken.verify(authHeader, key) as JwtPayload;
     
-    const user = await AppDataSource.getRepository("User").findOne({where: {userId: data.userId}})
+    const user = await AppDataSource.getRepository("User").findOne({where: {id: data.userId}})
 
     if (!user) {
         return res.status(401).send("User not found");

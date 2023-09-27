@@ -1,14 +1,15 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
 import { Book } from "./index";
 import states from "./states";
 
 @Entity()
 export class Swap {
+
     @PrimaryGeneratedColumn()
-    swapId: number;
+    id: number;
 
     @ManyToOne(() => Book, (book: Book) => book.swaps1)
-    book1Id: number;
+    book1: number;
 
     @Column({
         type: "enum",
@@ -18,7 +19,7 @@ export class Swap {
     state1: states;
 
     @ManyToOne(() => Book, (book: Book) => book.swaps2)
-    book2Id: number;
+    book2: number;
 
     @Column({
         type: "enum",
