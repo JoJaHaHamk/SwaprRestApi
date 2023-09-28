@@ -5,7 +5,7 @@ import authMiddleware, {generateToken} from "../authMiddleware";
 
 const userRepository = AppDataSource.getRepository("User");
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // POST /register
 /*
@@ -59,30 +59,46 @@ router.post("/register", async (req: Request, res: Response) => {
 }
 */
 router.post("/login", async (req: Request, res: Response) => {
+  // Create the a user object with the email and password
   const user = {'email': req.body.email, 'password': req.body.password};
   
+  // Get the user from the database
   userRepository.find({where: { email: user.email }}).then((users: any) => {
+    // Return an error if the user is not found
     if (users.length == 0) {
       res.status(400).send("Email not found");
       return;
     }
 
+    // Compare the password with the hash
     compare(user.password, users[0].password, (err, result) => {
 
-      const token = generateToken(users[0].userId);
-
       if (result) {
+        // Create a token and send it back to the client
+        const token = generateToken(users[0].id);
         res.status(200).json({
           token: token,
-          userId: users[0].userId
+          userId: users[0].id
         });
         return;
       } else {
+        // Return an error if the password is wrong
         res.status(400).send("Wrong password");
         return;
       }
     });
   });
+});
+
+// GET /user/:userId
+router.get("/user/:id", authMiddleware, async (req: Request, res: Response) => {
+  const user = await userRepository.findOne({where: { id: req.params.id }});
+  if (!user) {
+    res.status(400).send("User not found");
+    return;
+  }
+  res.status(200).send(user);
+  return;
 });
 
 // PUT /user/:id
@@ -103,7 +119,7 @@ router.put("/user/:id", authMiddleware, async (req: Request, res: Response) => {
     return;
   }
 
-  const user = userRepository.findOne({where: { userId: req.params.id }}).then( async (user: any) => {
+  const user = userRepository.findOne({where: { id: req.params.id }}).then( async (user: any) => {
     if (!user) {
       res.status(400).send("User not found");
       return;
@@ -118,7 +134,7 @@ router.put("/user/:id", authMiddleware, async (req: Request, res: Response) => {
     }
 
     await userRepository.update(req.params.id, user);
-    const updatedUser = await userRepository.findOne({where: { userId: req.params.id }});
+    const updatedUser = await userRepository.findOne({where: { id: req.params.id }});
     console.log(updatedUser);
     res.status(200).send(updatedUser);
     return;
