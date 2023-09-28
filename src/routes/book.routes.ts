@@ -102,7 +102,7 @@ router.delete("/:bookId", authMiddleware, async (req: Request, res: Response) =>
     const book = await bookRepository.findOne({where: {"user.id": req.params.userId, id: req.params.bookId}});
 
     // Check if the book exists
-    // If not, send a 400 Bad Request response to let the user now what's wrong
+    // If not, send a 400 Bad Request response to let the user know what's wrong
     if (!book) {
         res.status(400).send("Book not found or not owned by authorized user");
         return;
