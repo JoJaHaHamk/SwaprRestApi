@@ -10,11 +10,34 @@ const userRepository = AppDataSource.getRepository("User");
 
 // GET /user/:userId/book
 router.get("/", authMiddleware, async (req: Request, res: Response) => {
+
+    const type = req.query.type as types;
+    const search = req.query.search;
+
+    if (!type) {
+        res.status(400).send("Missing type");
+        return;
+    }
+    if (!Object.values(types).includes(type)) {
+        res.status(400).send("Invalid type");
+        return;
+    }
+
     // Get all the books from the database
-    const books = await bookRepository.find({where: {"user.id": req.params.userId}});
+    const books = await bookRepository.find({where: {"user.id": req.params.userId, type: type}});
 
     if (books.length == 0) {
         res.status(400).send("No books found for this user");
+        return;
+    }
+
+    if (search) {
+        const filteredBooks = books.filter(book => book.title.toLowerCase().includes(String(search).toLowerCase()) || book.author.toLowerCase().includes(String(search).toLocaleLowerCase()));
+        if (filteredBooks.length == 0) {
+            res.status(400).send("No books found for this search");
+            return;
+        }
+        res.status(200).send(filteredBooks);
         return;
     }
 
