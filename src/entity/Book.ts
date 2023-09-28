@@ -13,6 +13,12 @@ export class Book {
     })
     isbn: string;
 
+    @Column()
+    title: string;
+
+    @Column()
+    author: string;
+
     @ManyToOne(() => User, (user: User) => user.books)
     user: User;
 

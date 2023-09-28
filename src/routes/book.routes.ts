@@ -26,6 +26,8 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
 /*
 {
     "isbn": "978-3-16-148410-0",
+    "title": "The Lord of the Rings",
+    "author": "J. R. R. Tolkien",
     "type": "owned"
 }
 */
@@ -35,7 +37,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
 
     // Check if all the fields are present
     // If not, send a 400 Bad Request response to let the user now what's wrong
-    if (!body.isbn || !body.type) {
+    if (!body.isbn || !body.type || !body.title || !body.author) {
         res.status(400).send("Missing fields");
         return;
     }
@@ -59,6 +61,8 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     const book = {
         isbn: body.isbn,
         user: user,
+        title: body.title,
+        author: body.author,
         type: body.type
     }
 
