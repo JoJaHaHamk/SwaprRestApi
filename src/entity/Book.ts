@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn} from "typeorm";
 import { User, Swap } from "./index";
 import types from "./type";
 
@@ -6,15 +6,21 @@ import types from "./type";
 export class Book {
 
     @PrimaryGeneratedColumn()
-    bookId: number;
+    id: number;
 
     @Column({
         length: 30
     })
     isbn: string;
 
+    @Column()
+    title: string;
+
+    @Column()
+    author: string;
+
     @ManyToOne(() => User, (user: User) => user.books)
-    userId: User;
+    user: User;
 
     @Column({
         type: 'enum',
@@ -23,9 +29,9 @@ export class Book {
     })
     type: types;
 
-    @OneToMany(() => Swap, (swap: Swap) => swap.book1Id)
+    @OneToMany(() => Swap, (swap: Swap) => swap.book1, {onDelete: "CASCADE"})
     swaps1: Swap[];
 
-    @OneToMany(() => Swap, (swap: Swap) => swap.book2Id)
+    @OneToMany(() => Swap, (swap: Swap) => swap.book2, {onDelete: "CASCADE"})
     swaps2: Swap[];
 };
