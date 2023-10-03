@@ -276,7 +276,7 @@ components:
     User:
       type: object
       required:
-        - name
+        - username
         - email
         - password
         - address
