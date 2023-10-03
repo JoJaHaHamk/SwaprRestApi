@@ -66,10 +66,21 @@ router.patch("/:swapId", authMiddleware, async (req: Request, res: Response) => 
         return;
     }
 
+    const swapToReturn = {
+        swapId: swap.id,
+        wantedBookIsbn: "",
+        ownedBookIsbn: "",
+        distance: swap.distanceInMeters,
+    };
+
     if (swap.book1.user.id == req.params.userId) {
         swap.state1 = body.state;
+        swapToReturn.wantedBookIsbn = swap.book2.isbn;
+        swapToReturn.ownedBookIsbn = swap.book1.isbn;
     } else if (swap.book2.user.id == req.params.userId) {
         swap.state2 = body.state;
+        swapToReturn.wantedBookIsbn = swap.book1.isbn;
+        swapToReturn.ownedBookIsbn = swap.book2.isbn;
     } else {
         res.status(400).send("User not found");
         return;
@@ -77,10 +88,8 @@ router.patch("/:swapId", authMiddleware, async (req: Request, res: Response) => 
 
     swap = await swapRepository.save(swap);
 
-    swap = await swapRepository.findOneBy({id: req.params.swapId});
-
     // Send the updated swap as a response
-    res.status(200).send(swap);
+    res.status(200).json(swapToReturn);
 });
 
 export {router};
