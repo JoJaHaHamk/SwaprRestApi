@@ -9,7 +9,7 @@ export class Swap {
     id: number;
 
     @ManyToOne(() => Book, (book: Book) => book.swaps1)
-    book1: number;
+    book1: Book;
 
     @Column({
         type: "enum",
@@ -19,7 +19,7 @@ export class Swap {
     state1: states;
 
     @ManyToOne(() => Book, (book: Book) => book.swaps2)
-    book2: number;
+    book2: Book;
 
     @Column({
         type: "enum",

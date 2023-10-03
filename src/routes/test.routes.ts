@@ -17,7 +17,7 @@ router.get("/", async (request, response) => {
         response.send("No book found");
         return;
     }
-    const numberOfSwaps: Number = await matchAlgorithm(book, 20);
+    const numberOfSwaps: number = await matchAlgorithm(book, 20);
 
     response.json({numberOfSwaps: numberOfSwaps});
 });
