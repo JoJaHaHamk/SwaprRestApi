@@ -22,7 +22,7 @@ router.post("/register", async (req: Request, res: Response) => {
   
   const body = req.body;
   
-  if (!body.username || !body.password || !body.email || !body.address || !body.city || !body.country) {
+  if (!body.username || !body.password || !body.email || !body.adress || !body.city || !body.country) {
     res.status(400).send("Missing fields");
     return;
   }
