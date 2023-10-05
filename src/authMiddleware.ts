@@ -12,7 +12,14 @@ export default async (req: Request, res: Response, next: any) => {
         return;
     }
 
-    const data: JwtPayload = jsonwebtoken.verify(authHeader, key) as JwtPayload;
+    let data;
+    try {
+        data = jsonwebtoken.verify(authHeader, key) as JwtPayload;
+
+    } catch (err) {
+        res.status(401).send("Invalid token");
+        return;
+    }
     
     const user = await AppDataSource.getRepository("User").findOne({where: {id: data.userId}})
 
