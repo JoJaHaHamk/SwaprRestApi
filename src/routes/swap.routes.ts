@@ -1,13 +1,13 @@
 import authMiddleware, {generateToken} from "../authMiddleware";
 import { Router, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
-import { states } from "../entity/index";
+import { states, types, User, Book, Swap } from "../entity";
 
 const router = Router({mergeParams: true});
 
-const UserRepository = AppDataSource.getRepository("User");
-const bookRepository = AppDataSource.getRepository("Book");
-const swapRepository = AppDataSource.getRepository("Swap");
+const UserRepository = AppDataSource.getRepository(User);
+const bookRepository = AppDataSource.getRepository(Book);
+const swapRepository = AppDataSource.getRepository(Swap);
 
 // GET /user/:userId/swap
 /*
@@ -16,29 +16,30 @@ const swapRepository = AppDataSource.getRepository("Swap");
 }
 */
 router.get("/", authMiddleware, async (req: Request, res: Response) => {
+    const state = req.query.state as states | undefined;
     // Get all the swaps from the database
-    const swaps1 = await swapRepository.createQueryBuilder("swap").innerJoin('swap.book1Id', 'book').where('state = :state', {state: req.body.state}).where('book.userId = :userId', {userId: req.params.userId}).getMany();
-    const swaps2 = await swapRepository.createQueryBuilder("swap").innerJoin('swap.book2Id', 'book').where('state = :state', {state: req.body.state}).where('book.userId = :userId', {userId: req.params.userId}).getMany();
-    const transformedSwaps1 = swaps1.map((swap) => ({
-        swapId: swap.swapId,
-        wantedBookIsbn: swap.book1.isbn,
-        ownedBookIsbn: swap.book2.isbn,
-        distance: "to be calculated",
-    }));
-    const transformedSwaps2 = swaps2.map((swap) => ({
-        swapId: swap.swapId,
-        wantedBookIsbn: swap.book2.isbn,
-        ownedBookIsbn: swap.book1.isbn,
-        distance: "to be calculated",
-    }));
-    const swaps = transformedSwaps1.concat(transformedSwaps2);
-    // If no swaps are found, send a 400 Bad Request response to let the user now what's wrong
-    if (swaps.length == 0) {
-        res.status(400).send("No swaps found for this user and/or state");
-        return;
-    }
-    // Send the swaps as a response
-    res.status(200).send(swaps);
+    let swaps = await swapRepository.find({where: {state1: state, book1: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]});
+    swaps = swaps.concat(await swapRepository.find({where: {state2: state, book2: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]}));
+    
+    const swapsToReturn = swaps.map((swap) => {
+        console.log(swap.book1);
+        const swapToReturn = {
+            swapId: swap.id,
+            wantedBookIsbn: "",
+            ownedBookIsbn: "",
+            distance: swap.distanceInMeters,
+        };
+        if (swap.book1.user.id == Number(req.params.userId)) {
+            swapToReturn.wantedBookIsbn = swap.book2.isbn;
+            swapToReturn.ownedBookIsbn = swap.book1.isbn;
+        } else {
+            swapToReturn.wantedBookIsbn = swap.book1.isbn;
+            swapToReturn.ownedBookIsbn = swap.book2.isbn;
+        }
+        return swapToReturn;
+    });
+
+    res.status(200).send(swapsToReturn);
 });
 
 // PATCH
@@ -85,11 +86,11 @@ router.patch("/:swapId", authMiddleware, async (req: Request, res: Response) => 
         distance: swap.distanceInMeters,
     };
 
-    if (swap.book1.user.id == req.params.userId) {
+    if (swap.book1.user.id == Number(req.params.userId)) {
         swap.state1 = body.state;
         swapToReturn.wantedBookIsbn = swap.book2.isbn;
         swapToReturn.ownedBookIsbn = swap.book1.isbn;
-    } else if (swap.book2.user.id == req.params.userId) {
+    } else if (swap.book2.user.id == Number(req.params.userId)) {
         swap.state2 = body.state;
         swapToReturn.wantedBookIsbn = swap.book1.isbn;
         swapToReturn.ownedBookIsbn = swap.book2.isbn;
