@@ -13,7 +13,7 @@ const router = Router({ mergeParams: true });
   "username": "username",
   "password": "password",
   "email": "email",
-  "adress": "adress",
+  "address": "address",
   "city": "city",
   "country": "country"
 }
@@ -22,7 +22,7 @@ router.post("/register", async (req: Request, res: Response) => {
   
   const body = req.body;
   
-  if (!body.username || !body.password || !body.email || !body.adress || !body.city || !body.country) {
+  if (!body.username || !body.password || !body.email || !body.address || !body.city || !body.country) {
     res.status(400).send("Missing fields");
     return;
   }
@@ -39,7 +39,7 @@ router.post("/register", async (req: Request, res: Response) => {
         username: body.username,
         password: hash,
         email: body.email,
-        adress: body.adress,
+        address: body.address,
         city: body.city,
         country: body.country
       }
@@ -106,7 +106,7 @@ router.get("/user/:userId", authMiddleware, async (req: Request, res: Response) 
 {
 	"username": "username",
 	"email": "email",
-	"adress": "adress",
+	"address": "address",
 	"city": "city",
 	"country": "country"
 }
@@ -114,7 +114,7 @@ router.get("/user/:userId", authMiddleware, async (req: Request, res: Response) 
 router.put("/user/:userId", authMiddleware, async (req: Request, res: Response) => {
   const body = req.body;
 
-  if (!body.username && !body.email && !body.adress && !body.city && !body.country) {
+  if (!body.username && !body.email && !body.address && !body.city && !body.country) {
     res.status(400).send("Missing fields");
     return;
   }
@@ -128,7 +128,7 @@ router.put("/user/:userId", authMiddleware, async (req: Request, res: Response) 
     user = {
       username: body.username || user.username,
       email: body.email || user.email,
-      adress: body.adress || user.adress,
+      address: body.address || user.address,
       city: body.city || user.city,
       country: body.country || user.country
     }
