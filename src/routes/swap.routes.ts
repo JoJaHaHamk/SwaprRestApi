@@ -19,7 +19,19 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
     // Get all the swaps from the database
     const swaps1 = await swapRepository.createQueryBuilder("swap").innerJoin('swap.book1Id', 'book').where('state = :state', {state: req.body.state}).where('book.userId = :userId', {userId: req.params.userId}).getMany();
     const swaps2 = await swapRepository.createQueryBuilder("swap").innerJoin('swap.book2Id', 'book').where('state = :state', {state: req.body.state}).where('book.userId = :userId', {userId: req.params.userId}).getMany();
-    const swaps = swaps1.concat(swaps2);
+    const transformedSwaps1 = swaps1.map((swap) => ({
+        swapId: swap.swapId,
+        wantedBookIsbn: swap.book1.isbn,
+        ownedBookIsbn: swap.book2.isbn,
+        distance: "to be calculated",
+    }));
+    const transformedSwaps2 = swaps2.map((swap) => ({
+        swapId: swap.swapId,
+        wantedBookIsbn: swap.book2.isbn,
+        ownedBookIsbn: swap.book1.isbn,
+        distance: "to be calculated",
+    }));
+    const swaps = transformedSwaps1.concat(transformedSwaps2);
     // If no swaps are found, send a 400 Bad Request response to let the user now what's wrong
     if (swaps.length == 0) {
         res.status(400).send("No swaps found for this user and/or state");
