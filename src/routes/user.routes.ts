@@ -118,8 +118,7 @@ router.put("/user/:userId", authMiddleware, async (req: Request, res: Response) 
     res.status(400).send("Missing fields");
     return;
   }
-
-  const user = userRepository.findOne({where: { id: req.params.id }}).then( async (user: any) => {
+  const user = userRepository.findOne({where: { id: req.params.userId }}).then( async (user: any) => {
     if (!user) {
       res.status(400).send("User not found");
       return;
@@ -133,9 +132,8 @@ router.put("/user/:userId", authMiddleware, async (req: Request, res: Response) 
       country: body.country || user.country
     }
 
-    await userRepository.update(req.params.id, user);
-    const updatedUser = await userRepository.findOne({where: { id: req.params.id }});
-    console.log(updatedUser);
+    await userRepository.update(req.params.userId, user);
+    const updatedUser = await userRepository.findOne({where: { id: req.params.userId }});
     res.status(200).send(updatedUser);
     return;
   });

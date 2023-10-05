@@ -96,7 +96,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     let result = await bookRepository.save(book);
     result = await bookRepository.findOne({where: {id: result.id}, relations: ["user"]}) as Book; 
 
-    console.log(await matchAlgorithm(result, 20));
+    await matchAlgorithm(result, 20);
 
     // Send the new book as a response
     res.status(200).send(result);

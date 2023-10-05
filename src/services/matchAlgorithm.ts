@@ -45,6 +45,9 @@ const matchAlgorithm = async (book: Book, maxSwaps: number): Promise<number> => 
     // Distance Calculation
 
     const users = availableSwapList.map((item) => item.item.user);
+    if (users.length === 0) {
+        return 0;
+    }
     const distances = await distanceListCalculator(book.user, users);
 
     for (let i = 0; i < availableSwapList.length; i++) {
