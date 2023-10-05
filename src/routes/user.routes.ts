@@ -111,7 +111,7 @@ router.get("/user/:userId", authMiddleware, async (req: Request, res: Response) 
 	"country": "country"
 }
 */
-router.put("/user/:id", authMiddleware, async (req: Request, res: Response) => {
+router.put("/user/:userId", authMiddleware, async (req: Request, res: Response) => {
   const body = req.body;
 
   if (!body.username && !body.email && !body.adress && !body.city && !body.country) {
