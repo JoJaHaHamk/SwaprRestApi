@@ -10,8 +10,8 @@ const apiKey = "AIzaSyAwokyR92AKlvThfnglg2F2uUhgTvl2krQ";
 const distanceListCalculator = async (user: User, users: User[]): Promise<number[]> => {
     const response = await axios.get(url, {
         params: {
-            origins: `${user.adress},${user.city},${user.country}`,
-            destinations: users.map((user) => `${user.adress},${user.city},${user.country}`).join('|'),
+            origins: `${user.address},${user.city},${user.country}`,
+            destinations: users.map((user) => `${user.address},${user.city},${user.country}`).join('|'),
             key: apiKey
         }
     });
