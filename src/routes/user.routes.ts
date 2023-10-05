@@ -91,8 +91,8 @@ router.post("/login", async (req: Request, res: Response) => {
 });
 
 // GET /user/:userId
-router.get("/user/:id", authMiddleware, async (req: Request, res: Response) => {
-  const user = await userRepository.findOne({where: { id: req.params.id }});
+router.get("/user/:userId", authMiddleware, async (req: Request, res: Response) => {
+  const user = await userRepository.findOne({where: { id: req.params.userId }});
   if (!user) {
     res.status(400).send("User not found");
     return;
