@@ -2,11 +2,14 @@ import authMiddleware, {generateToken} from "../authMiddleware";
 import { Router, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { types } from "../entity/index"
+import { matchAlgorithm } from "../services";
+import { match } from "assert";
+import { Book, User } from "../entity";
 
 const router = Router({mergeParams: true});
 
-const bookRepository = AppDataSource.getRepository("Book");
-const userRepository = AppDataSource.getRepository("User");
+const bookRepository = AppDataSource.getRepository(Book);
+const userRepository = AppDataSource.getRepository(User);
 
 // GET /user/:userId/book
 router.get("/", authMiddleware, async (req: Request, res: Response) => {
@@ -24,7 +27,7 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
     }
 
     // Get all the books from the database
-    const books = await bookRepository.find({where: {"user.id": req.params.userId, type: type}});
+    const books = await bookRepository.find({where: {user: {id: Number(req.params.userId)}, type: type}});
 
     if (books.length == 0) {
         res.status(400).send("No books found for this user");
@@ -72,7 +75,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     }
 
     // Get the user from the database to later add to the new book
-    const user = await userRepository.findOne({where: {id: req.params.userId}});
+    const user = await userRepository.findOne({where: {id: Number(req.params.userId)}});
 
     // check if the user exists, if not send a 400 Bad Request response to let the user now what's wrong
     if (!user) {
@@ -90,7 +93,10 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     }
 
     // Save the new book to the database
-    const result = await bookRepository.save(book);
+    let result = await bookRepository.save(book);
+    result = await bookRepository.findOne({where: {id: result.id}, relations: ["user"]}) as Book; 
+
+    console.log(await matchAlgorithm(result, 20));
 
     // Send the new book as a response
     res.status(200).send(result);
@@ -99,7 +105,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
 // DELETE /user/:userId/book/:bookId
 router.delete("/:bookId", authMiddleware, async (req: Request, res: Response) => {
     // Get the book from the database
-    const book = await bookRepository.findOne({where: {"user.id": req.params.userId, id: req.params.bookId}});
+    const book = await bookRepository.findOne({where: {user: {id: Number(req.params.userId)}, id: Number(req.params.bookId)}});
 
     // Check if the book exists
     // If not, send a 400 Bad Request response to let the user know what's wrong
