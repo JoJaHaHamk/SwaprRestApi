@@ -17,10 +17,16 @@ const swapRepository = AppDataSource.getRepository(Swap);
 */
 router.get("/", authMiddleware, async (req: Request, res: Response) => {
     const state = req.query.state as states | undefined;
-    // Get all the swaps from the database
-    let swaps = await swapRepository.find({where: {state1: state, book1: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]});
-    swaps = swaps.concat(await swapRepository.find({where: {state2: state, book2: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]}));
+    let swaps: Swap[] = [];
+    if (state == "accepted") {
+        swaps = await swapRepository.find({where: {state1: state, state2: state, book1: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]});
+        swaps = swaps.concat(await swapRepository.find({where: {state2: state, state1: state, book2: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]}));
+    } else {
+        swaps = await swapRepository.find({where: {state1: state, book1: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]});
+        swaps = swaps.concat(await swapRepository.find({where: {state2: state, book2: {user: {id: Number(req.params.userId)}}}, relations: ["book1", "book2", "book1.user", "book2.user"]}));
+    }
     
+    // Get all the swaps from the database
     const swapsToReturn = swaps.map((swap) => {
         console.log(swap.book1);
         const swapToReturn = {
