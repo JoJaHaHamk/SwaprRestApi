@@ -225,10 +225,28 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Swap'
+                type: object
+                required:
+                  - swapId
+                  - wantedBookIsbn
+                  - ownedBookIsbn
+                properties:
+                  swapId:
+                    type: integer
+                    example: 1
+                  contactEmail:
+                    type: string
+                    example: example@email.com
+                  wantedBookIsbn:
+                    type: string
+                    example: 978-3-16-148410-0
+                  ownedBookIsbn:
+                    type: string
+                    example: 978-3-16-148410-0
+                  distance:
+                    type: string
+                    example: 1.2 km
+                  
         '400':
           description: Invalid parameters
   /user/{userId}/swap/{swapId}:
