@@ -37,12 +37,12 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
         };
         if (swap.book1.user.id == Number(req.params.userId)) {
             swapToReturn.contactEmail = swap.book2.user.email;
-            swapToReturn.wantedBookIsbn = swap.book2.isbn;
-            swapToReturn.ownedBookIsbn = swap.book1.isbn;
-        } else {
-            swapToReturn.contactEmail = swap.book1.user.email;
             swapToReturn.wantedBookIsbn = swap.book1.isbn;
             swapToReturn.ownedBookIsbn = swap.book2.isbn;
+        } else {
+            swapToReturn.contactEmail = swap.book1.user.email;
+            swapToReturn.wantedBookIsbn = swap.book2.isbn;
+            swapToReturn.ownedBookIsbn = swap.book1.isbn;
         }
         return swapToReturn;
     });
