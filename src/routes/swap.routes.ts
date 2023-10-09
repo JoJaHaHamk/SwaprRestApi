@@ -37,12 +37,12 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
         };
         if (swap.book1.user.id == Number(req.params.userId)) {
             swapToReturn.contactEmail = swap.book2.user.email;
-            swapToReturn.wantedBookIsbn = swap.book2.isbn;
-            swapToReturn.ownedBookIsbn = swap.book1.isbn;
-        } else {
-            swapToReturn.contactEmail = swap.book1.user.email;
             swapToReturn.wantedBookIsbn = swap.book1.isbn;
             swapToReturn.ownedBookIsbn = swap.book2.isbn;
+        } else {
+            swapToReturn.contactEmail = swap.book1.user.email;
+            swapToReturn.wantedBookIsbn = swap.book2.isbn;
+            swapToReturn.ownedBookIsbn = swap.book1.isbn;
         }
         return swapToReturn;
     });
@@ -93,15 +93,15 @@ router.patch("/:swapId", authMiddleware, async (req: Request, res: Response) => 
         ownedBookIsbn: "",
         distance: swap.distanceInMeters,
     };
-
+    console.log(swap.book1.user.id, Number(req.params.userId));
     if (swap.book1.user.id == Number(req.params.userId)) {
         swap.state1 = body.state;
-        swapToReturn.wantedBookIsbn = swap.book2.isbn;
-        swapToReturn.ownedBookIsbn = swap.book1.isbn;
-    } else if (swap.book2.user.id == Number(req.params.userId)) {
-        swap.state2 = body.state;
         swapToReturn.wantedBookIsbn = swap.book1.isbn;
         swapToReturn.ownedBookIsbn = swap.book2.isbn;
+    } else if (swap.book2.user.id == Number(req.params.userId)) {
+        swap.state2 = body.state;
+        swapToReturn.wantedBookIsbn = swap.book2.isbn;
+        swapToReturn.ownedBookIsbn = swap.book1.isbn;
     } else {
         res.status(400).send("User not found");
         return;
