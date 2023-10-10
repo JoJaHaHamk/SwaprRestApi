@@ -8,7 +8,7 @@ export class Swap {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Book, (book: Book) => book.swaps1)
+    @ManyToOne(() => Book, (book: Book) => book.swaps1, {onDelete: "CASCADE", onUpdate: "CASCADE"})
     book1: Book;
 
     @Column({
@@ -18,7 +18,7 @@ export class Swap {
     })
     state1: states;
 
-    @ManyToOne(() => Book, (book: Book) => book.swaps2)
+    @ManyToOne(() => Book, (book: Book) => book.swaps2, {onDelete: "CASCADE", onUpdate: "CASCADE"})
     book2: Book;
 
     @Column({
